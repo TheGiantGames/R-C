@@ -1,10 +1,14 @@
 
 
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+
+import 'package:research_consulting/home.dart';
+import 'package:research_consulting/register.dart';
 void main() {
   runApp(const MyApp());
 }
@@ -24,7 +28,7 @@ class MyApp extends StatelessWidget {
           colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
           useMaterial3: true,
         ),
-        home: const MyHomePage(title: 'Flutter Demo Home Page'),
+        home: const MyHomePage(title: "Login"),
       ),
 
     );
@@ -36,12 +40,14 @@ class MyHomePage extends StatefulWidget {
 
   final String title;
 
+
   @override
   State<MyHomePage> createState() => _MyHomePageState();
 }
 
 class _MyHomePageState extends State<MyHomePage> {
 
+  bool isLogin = true;
   final _formKey = GlobalKey<FormState>();
   var staffIdController = TextEditingController();
   var passwordController = TextEditingController();
@@ -62,6 +68,11 @@ Map<String , dynamic> list = {};
     print(_response.statusCode);
     if (_response.statusCode == 200) {
       setState(() {
+
+        Map a = jsonDecode(_response.body);
+        print(a['error']);
+        isLogin = a['error'];
+
           //list1.add(_response.body);
         });
 
@@ -71,22 +82,7 @@ Map<String , dynamic> list = {};
 
 
   
-  postData(var staffID , password)async{
-    final response = await http.post(Uri.parse("http://192.168.116.1/R&C/v1/loginUser.php"),
-    body: {
-      "staffID" : staffID,
-      "password" :password
-    });
-    //print(response.body);
-    setState(() {
-      res = jsonDecode(response.body) as Map<String , dynamic>;
-    });
 
-    return jsonDecode(response.body);
-
-    final data = await jsonDecode(response.body);
-    print(data['error']);
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -153,14 +149,28 @@ Map<String , dynamic> list = {};
                     ElevatedButton(
                       onPressed: () {
                         if (_formKey.currentState!.validate()) {
-                          print(Login(staffIdController.text, passwordController.text));
-                          print(list);
+                         Login(staffIdController.text, passwordController.text);
+                         print(isLogin);
+                         if(!isLogin){
+                            Navigator.push(context , MaterialPageRoute(builder: (context) => Home(id: staffIdController.text , pass: passwordController.text,)));
+                         }
+                         // print(list);
 
 
                         }
                       },
                       child: const Text('Submit'),
                     ),
+                    SizedBox(height: 15.h),
+                    Row(
+                      children: [
+                        Text("New User?") , 
+                        InkWell(onTap: (){
+                          Navigator.push(context , MaterialPageRoute(builder: (context) => Register()));
+                        },
+                            child: Text("Register", style: TextStyle(color: Colors.lightBlue , decoration: TextDecoration.underline),)),
+                      ],
+                    )
                   ],
                 ),
                 ),
