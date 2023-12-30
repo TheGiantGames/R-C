@@ -96,8 +96,8 @@ class _RegisterState extends State<Register> {
                       TextFormField(
                         keyboardType: TextInputType.number,
                         decoration: InputDecoration(
-                          labelText: 'Username',
-                          hintText: 'Enter Username',
+                          labelText: 'Webmail Id ',
+                          hintText: 'Enter Webmail Id',
                           prefixIcon: Icon(Icons.account_circle_outlined),
                           border: OutlineInputBorder(),
                         ),
@@ -107,7 +107,7 @@ class _RegisterState extends State<Register> {
                         controller: usernameController,
                         validator: (staffID){
                           if (staffID == null || staffID.isEmpty) {
-                            return 'Please enter Username';
+                            return 'Please enter Webmail Id';
                           }
                           return null;
                         },
